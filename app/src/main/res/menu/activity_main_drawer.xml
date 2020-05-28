@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <item android:title="@string/documents" >
+        <menu>
+            <item
+                android:id="@+id/take_item"
+                android:title="@string/documents_take" />
+            <item
+                android:id="@+id/order_item"
+                android:title="@string/documents_order" />
+            <item
+                android:id="@+id/stocktake_item"
+                android:title="@string/stocktaking" />
+        </menu>
+    </item>
+    <item android:title="@string/account" >
+        <menu>
+            <item
+                android:id="@+id/account_logout"
+                android:title="@string/logout" />
+            <item
+                android:id="@+id/account_change_password"
+                android:title="@string/change_password" />
+            <item
+                android:id="@+id/change_locker"
+                android:title="Zmień szafę" />
+        </menu>
+    </item>
+
+</menu>
