@@ -12,7 +12,7 @@ class LoginClientImpl : LoginClient {
 
     companion object{
         private const val MAIN_URL = "http://martech.magg.pl/szafa.aspx"
-        private const val JSON_ERROR_CODE = "errCode"
+        private const val JSON_ERROR_CODE = "retCode"
         private const val OK = 0
     }
 

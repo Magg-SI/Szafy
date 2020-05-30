@@ -10,7 +10,7 @@ import java.net.URL
 class LockerClientImpl() : LockerClient {
     companion object{
         private const val MAIN_URL = "http://martech.magg.pl/szafa.aspx"
-        private const val JSON_ERROR_CODE = "errCode"
+        private const val JSON_ERROR_CODE = "retCode"
         private const val OK = 0
         private const val ALREADY_OPEN = 2
         private const val WAITING_TO_OPEN = 1
