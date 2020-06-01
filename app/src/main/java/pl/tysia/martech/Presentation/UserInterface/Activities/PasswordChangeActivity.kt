@@ -18,8 +18,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_password_change.*
 import kotlinx.android.synthetic.main.app_bar.*
 import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
-import pl.tysia.maggwarehouse.Persistance.LoginClientMock
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
+import pl.tysia.martech.Persistance.Result
 import pl.tysia.martech.R
 import java.io.IOException
 
@@ -137,12 +137,12 @@ class PasswordChangeActivity : AppCompatActivity() {
     }
 
     inner class ChangePasswordTask internal constructor(private val mPassword: String) :
-        AsyncTask<String, String, User>() {
+        AsyncTask<String, String, Result<Boolean>>() {
 
-        private var exceptionOccured = false
+        private var exceptionOccurred = false
 
 
-        override fun doInBackground(vararg params: String): User? {
+        override fun doInBackground(vararg params: String):  Result<Boolean>? {
 
             val loginService = LoginClientImpl()
             val user = User.getLoggedUser(applicationContext)
@@ -155,31 +155,28 @@ class PasswordChangeActivity : AppCompatActivity() {
             }
 
             return try {
-                if (loginService.changePassword(user, mPassword))
-                    user else
-                    null
+                return loginService.changePassword(user, mPassword)
             }catch (ex : IOException){
-                exceptionOccured = true
+                exceptionOccurred = true
                 null
             }
 
-
         }
 
-        override fun onPostExecute(result: User?) {
+        override fun onPostExecute(result: Result<Boolean>?) {
             mAuthTask = null
             showProgress(false)
 
             when {
-                result != null -> {
+                result != null -> okDialog(getString(R.string.exception_occurres), result.resultMessage)
+
+                result?.resultCode == Result.RESULT_OK -> {
                     finish()
                     Toast.makeText(this@PasswordChangeActivity, getString(R.string.password_changed_toast), Toast.LENGTH_LONG).show()
                 }
-                exceptionOccured -> okDialog(getString(R.string.connection_error), getString(R.string.connectoin_error_long_message))
-                else -> {
-                    password.error = getString(R.string.error_incorrect_password)
-                    password.requestFocus()
-                }
+
+                exceptionOccurred -> okDialog(getString(R.string.connection_error), getString(R.string.connectoin_error_long_message))
+
             }
         }
 

@@ -11,17 +11,29 @@
     android:orientation="vertical"
     android:gravity="bottom">
 
-    <TextView
+    <ImageView
+        android:id="@+id/imageView6"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1" android:id="@+id/name_tv"
-        android:textSize="24sp" android:layout_marginTop="16dp" android:textColor="@android:color/white"/>
+        android:layout_height="85dp"
+        android:layout_marginTop="8dp"
+        app:srcCompat="@drawable/baner_backless" />
 
     <TextView
+        android:id="@+id/name_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/lightSelectionGray"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/locker_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/locker_tv" android:textSize="18sp" android:textColor="@android:color/white"/>
+        android:textColor="@color/lightSelectionGray"
+        android:textSize="14sp" />
 
     <View
         android:id="@+id/divider2"

@@ -75,11 +75,32 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:padding="64dp"
+            app:layout_constraintBottom_toTopOf="@+id/button2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baner_open" />
+            app:srcCompat="@drawable/kluczyk" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="36dp"
+            android:background="@drawable/rounded_button"
+            android:clickable="false"
+            android:paddingStart="36dp"
+            android:paddingLeft="36dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="36dp"
+            android:paddingRight="36dp"
+            android:paddingBottom="4dp"
+            android:text="Otwórz szafę"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 

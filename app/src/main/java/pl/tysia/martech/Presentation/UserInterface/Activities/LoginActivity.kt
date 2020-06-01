@@ -6,6 +6,7 @@ import android.annotation.TargetApi
 import android.support.v7.app.AppCompatActivity
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.CursorLoader
+import android.content.DialogInterface
 import android.content.Loader
 import android.database.Cursor
 import android.net.Uri
@@ -21,6 +22,7 @@ import android.widget.TextView
 
 import java.util.ArrayList
 import android.content.Intent
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
 import android.widget.Toast
@@ -31,6 +33,7 @@ import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.Persistance.LoginClient
 import pl.tysia.maggwarehouse.Persistance.LoginClientMock
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
+import pl.tysia.martech.Persistance.Result
 
 /**
  * A login screen that offers login via email/password.
@@ -43,10 +46,11 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        if (User.getLoggedUser(applicationContext) != null) openMainActivity()
-
         setContentView(R.layout.activity_login)
+
+        if (User.getLoggedUser(applicationContext) != null)
+            TokenTask().execute()
+
         // Set up the login form.
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -240,40 +244,28 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         val IS_PRIMARY = 1
     }
 
+    inner class TokenTask internal constructor() :
+            AsyncTask<String, String, Result<Boolean>>() {
 
-    inner class UserLoginTask internal constructor(mEmail: String, mPassword: String) :
-        AsyncTask<String, String, Int>() {
-        private var user : User = User(mEmail, mPassword)
+        override fun onPreExecute() {
+            super.onPreExecute()
+            showProgress(true)
+        }
 
-
-        override fun doInBackground(vararg params: String): Int? {
+        override fun doInBackground(vararg params: String): Result<Boolean>? {
 
             val loginService = LoginClientImpl()
 
-            return loginService.authenticateUser(user)
-
+            return loginService.checkToken(User.getLoggedUser(this@LoginActivity)!!)
         }
 
-        override fun onPostExecute(result: Int?) {
+        override fun onPostExecute(result: Result<Boolean>?) {
             mAuthTask = null
             showProgress(false)
 
-            when (result) {
-                LoginClient.OK ->{
+            when (result?.resultCode) {
+                Result.RESULT_OK ->
                     openMainActivity()
-                    user.setLogged(this@LoginActivity)
-                }
-                LoginClient.WRONG_PASSWORD -> {
-                    password.error = getString(R.string.error_incorrect_password)
-                    password.requestFocus()
-                }
-                LoginClient.WRONG_LOGIN -> {
-                    email.error = getString(R.string.error_no_such_user)
-                    email.requestFocus()
-                }
-                else  -> {
-                    Toast.makeText(this@LoginActivity, "Nie udało się zalogować", Toast.LENGTH_SHORT).show();
-                }
             }
         }
 
@@ -283,5 +275,54 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         }
     }
 
+    inner class UserLoginTask internal constructor(mEmail: String, mPassword: String) :
+        AsyncTask<String, String, Result<User>>() {
+        private var user : User = User(mEmail, mPassword)
 
+
+        override fun doInBackground(vararg params: String): Result<User>? {
+
+            val loginService = LoginClientImpl()
+
+            return loginService.authenticateUser(user)
+
+        }
+
+        override fun onPostExecute(result: Result<User>?) {
+            mAuthTask = null
+            showProgress(false)
+
+            when {
+                result?.resultCode == Result.RESULT_OK -> {
+                    openMainActivity()
+                    user.setLogged(this@LoginActivity)
+                }
+                result?.resultCode == LoginClient.WRONG_PASSWORD -> {
+                    password.error = getString(R.string.error_incorrect_password)
+                    password.requestFocus()
+                }
+                result?.resultCode == LoginClient.WRONG_LOGIN -> {
+                    email.error = getString(R.string.error_no_such_user)
+                    email.requestFocus()
+                }
+                result != null -> okDialog(getString(R.string.exception_occurres), result.resultMessage)
+            }
+        }
+
+        override fun onCancelled() {
+            mAuthTask = null
+            showProgress(false)
+        }
+    }
+
+    private fun okDialog(title : String, message : String){
+        val dialogBuilder = AlertDialog.Builder(this)
+        dialogBuilder.setTitle(title)
+        dialogBuilder.setMessage(message)
+        dialogBuilder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, whichButton ->
+            //get what you need here!
+        })
+        val b = dialogBuilder.create()
+        b.show()
+    }
 }

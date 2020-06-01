@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity
             case ADMIN:
                // navigationView.getMenu().findItem(R.id.take_item).setVisible(false);
                 //navigationView.getMenu().findItem(R.id.order_item).setVisible(false);
-                if (user.getLockerID().equals("0")) changeLocker();
+                if (user.getLockerID() == 0) changeLocker();
                 action = ACTION_STOCKTAKE;
                 break;
             case WORKER:
@@ -109,9 +109,9 @@ public class MainActivity extends AppCompatActivity
         TextView locker_tv = findViewById(R.id.locker_tv);
 
         if (name_tv!= null)
-            name_tv.setText(user.getLogin());
+            name_tv.setText("Użytkownik: " + user.getLogin());
         if (locker_tv!= null)
-            locker_tv.setText(user.getLockerID().toString());
+            locker_tv.setText("Szafa: " + user.getLockerID().toString());
         return true;
     }
 
@@ -255,6 +255,7 @@ public class MainActivity extends AppCompatActivity
 
         user.setLockerID(locker.getId());
         user.setLockerNr(locker.getNumber());
+        user.setLogged(this);
 
         if (locker_tv!= null)
             locker_tv.setText(user.getLockerNr());

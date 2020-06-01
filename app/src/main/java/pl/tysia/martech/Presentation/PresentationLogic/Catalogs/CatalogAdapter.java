@@ -59,7 +59,7 @@ public abstract class CatalogAdapter<T extends ICatalogable> extends RecyclerVie
     }
 
     public void addItem(T item){
-        allItems.add(item);
+        allItems.add(0, item);
     }
 
     public void addAll(Collection<T> items){

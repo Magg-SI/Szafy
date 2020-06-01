@@ -13,6 +13,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.Persistance.LoginClient
 import pl.tysia.maggwarehouse.Persistance.LoginClientMock
+import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
+import pl.tysia.martech.Persistance.Result
 
 import pl.tysia.martech.Presentation.UserInterface.Activities.LoginActivity
 import pl.tysia.martech.Presentation.UserInterface.Activities.PasswordChangeActivity
@@ -190,19 +193,17 @@ class DialogFragmentPassword : DialogFragment() {
     }
 
     inner class UserLoginTask internal constructor(private val mPassword: String) :
-        AsyncTask<String, String, User>() {
+        AsyncTask<String, String, Result<User>>() {
 
-        override fun doInBackground(vararg params: String): User? {
+        override fun doInBackground(vararg params: String): Result<User>? {
 
-            val loginService = LoginClientMock()
+            val loginService = LoginClientImpl()
             val user = User.getLoggedUser(activity?.applicationContext!!)
 
             return if (user != null){
                 user.password = mPassword
 
-                if (loginService.authenticateUser(user) == LoginClient.OK)
-                    user else
-                    null
+                loginService.authenticateUser(user)
             }else{
                 val intent = Intent(activity, LoginActivity::class.java)
                 startActivity(intent)
@@ -212,17 +213,21 @@ class DialogFragmentPassword : DialogFragment() {
 
         }
 
-        override fun onPostExecute(result: User?) {
+        override fun onPostExecute(result: Result<User>?) {
             mAuthTask = null
             showProgress(false)
 
-            if (result != null) {
-                val intent = Intent(activity, PasswordChangeActivity::class.java)
-                startActivity(intent)
-                dismiss()
-            } else {
-                password.error = getString(R.string.error_incorrect_password)
-                password.requestFocus()
+            when {
+                result?.resultCode == Result.RESULT_OK -> {
+                    val intent = Intent(activity, PasswordChangeActivity::class.java)
+                    startActivity(intent)
+                    dismiss()
+                }
+                result?.resultCode == LoginClient.WRONG_PASSWORD -> {
+                    password.error = getString(R.string.error_incorrect_password)
+                    password.requestFocus()
+                }
+                result != null -> okDialog(getString(R.string.exception_occurres), result.resultMessage)
             }
         }
 
@@ -230,5 +235,17 @@ class DialogFragmentPassword : DialogFragment() {
             mAuthTask = null
             showProgress(false)
         }
+    }
+
+
+    private fun okDialog(title : String, message : String){
+        val dialogBuilder = AlertDialog.Builder(activity!!.applicationContext)
+        dialogBuilder.setTitle(title)
+        dialogBuilder.setMessage(message)
+        dialogBuilder.setPositiveButton("OK", DialogInterface.OnClickListener { dialog, whichButton ->
+            //get what you need here!
+        })
+        val b = dialogBuilder.create()
+        b.show()
     }
 }

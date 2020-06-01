@@ -223,7 +223,7 @@ public class CollectWareCatalogAdapter extends CatalogAdapter<Order> {
             wareViewHolder.numberPicker2.setVisibility(View.INVISIBLE);
             wareViewHolder.numberPickerMinus2.setVisibility(View.INVISIBLE);
             wareViewHolder.numberPickerPlus2.setVisibility(View.INVISIBLE);
-            wareViewHolder.orderTV.setVisibility(View.VISIBLE);
+            //wareViewHolder.orderTV.setVisibility(View.VISIBLE);
             wareViewHolder.orderedNumberTV.setVisibility(View.INVISIBLE);
         }
 

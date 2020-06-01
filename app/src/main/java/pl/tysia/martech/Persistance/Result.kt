@@ -10,6 +10,9 @@ package pl.tysia.martech.Persistance
  * @constructor Konstruktor tworzy nowy rezultat.
  *
  */
-class Result<T> (var item : T, var resultCode : Int, var resultMessage : String) {
 
+class Result<T : Any> (var item : T?, var resultCode : Int, var resultMessage : String) {
+    companion object{
+        public const val RESULT_OK = 0;
+    }
 }
