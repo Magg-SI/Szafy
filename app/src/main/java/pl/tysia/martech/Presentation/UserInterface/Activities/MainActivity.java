@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         if (name_tv!= null)
             name_tv.setText("Użytkownik: " + user.getLogin());
         if (locker_tv!= null)
-            locker_tv.setText("Szafa: " + user.getLockerID().toString());
+            locker_tv.setText("Szafa: " + user.getLockerNr());
         return true;
     }
 
@@ -258,7 +258,7 @@ public class MainActivity extends AppCompatActivity
         user.setLogged(this);
 
         if (locker_tv!= null)
-            locker_tv.setText(user.getLockerNr());
+            locker_tv.setText("Szafa: " + user.getLockerNr());
     }
 
 
