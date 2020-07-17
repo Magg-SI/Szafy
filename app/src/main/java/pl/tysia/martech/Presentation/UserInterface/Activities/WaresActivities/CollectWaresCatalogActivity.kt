@@ -2,8 +2,7 @@ package pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities
 
 import android.os.AsyncTask
 import android.widget.Toast
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
-import pl.tysia.martech.Persistance.ApiClients.WaresClientMock
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.martech.Presentation.PresentationLogic.Catalogs.CatalogAdapter
 import pl.tysia.martech.BusinessLogic.Domain.Order
 import pl.tysia.martech.Persistance.ApiClients.WaresClientImpl

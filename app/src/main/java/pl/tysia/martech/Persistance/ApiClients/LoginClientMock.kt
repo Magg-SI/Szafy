@@ -1,6 +1,6 @@
 package pl.tysia.maggwarehouse.Persistance
 
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.BusinessLogic.Domain.UserType
 import pl.tysia.martech.Persistance.Result
 

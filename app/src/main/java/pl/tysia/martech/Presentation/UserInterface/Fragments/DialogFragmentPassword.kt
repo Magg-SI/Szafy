@@ -18,17 +18,11 @@ import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_login.*
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import android.widget.*
 import pl.tysia.maggwarehouse.Persistance.LoginClient
-import pl.tysia.maggwarehouse.Persistance.LoginClientMock
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
 import pl.tysia.martech.Persistance.Result
-
 import pl.tysia.martech.Presentation.UserInterface.Activities.LoginActivity
 import pl.tysia.martech.Presentation.UserInterface.Activities.PasswordChangeActivity
 import pl.tysia.martech.R
@@ -175,6 +169,8 @@ class DialogFragmentPassword : DialogFragment() {
     }
 
 
+
+
     interface OnFragmentInteractionListener {
         fun onTypeSelected(checks: BooleanArray?)
     }
@@ -203,7 +199,10 @@ class DialogFragmentPassword : DialogFragment() {
             return if (user != null){
                 user.password = mPassword
 
-                loginService.authenticateUser(user)
+                val res = loginService.authenticateUser(user)
+                user.setLogged(activity!!)
+                res
+
             }else{
                 val intent = Intent(activity, LoginActivity::class.java)
                 startActivity(intent)
@@ -217,6 +216,8 @@ class DialogFragmentPassword : DialogFragment() {
             mAuthTask = null
             showProgress(false)
 
+            val passwordET = thisView!!.findViewById<EditText>(R.id.password_input)
+
             when {
                 result?.resultCode == Result.RESULT_OK -> {
                     val intent = Intent(activity, PasswordChangeActivity::class.java)
@@ -224,8 +225,8 @@ class DialogFragmentPassword : DialogFragment() {
                     dismiss()
                 }
                 result?.resultCode == LoginClient.WRONG_PASSWORD -> {
-                    password.error = getString(R.string.error_incorrect_password)
-                    password.requestFocus()
+                    passwordET.error = getString(R.string.error_incorrect_password)
+                    passwordET.requestFocus()
                 }
                 result != null -> okDialog(getString(R.string.exception_occurres), result.resultMessage)
             }

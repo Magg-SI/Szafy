@@ -14,10 +14,9 @@ import android.text.TextUtils
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_password_change.*
 import kotlinx.android.synthetic.main.app_bar.*
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
 import pl.tysia.martech.Persistance.Result
 import pl.tysia.martech.R
@@ -168,7 +167,6 @@ class PasswordChangeActivity : AppCompatActivity() {
             showProgress(false)
 
             when {
-                result != null -> okDialog(getString(R.string.exception_occurres), result.resultMessage)
 
                 result?.resultCode == Result.RESULT_OK -> {
                     finish()
@@ -177,6 +175,7 @@ class PasswordChangeActivity : AppCompatActivity() {
 
                 exceptionOccurred -> okDialog(getString(R.string.connection_error), getString(R.string.connectoin_error_long_message))
 
+                result != null -> okDialog(getString(R.string.exception_occurres), result.resultMessage)
             }
         }
 

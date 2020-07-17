@@ -1,7 +1,8 @@
-package pl.tysia.maggwarehouse.BusinessLogic.Domain
+package pl.tysia.martech.BusinessLogic.Domain
 
 import android.content.Context
 import android.preference.PreferenceManager
+import pl.tysia.maggwarehouse.BusinessLogic.Domain.UserType
 
 class User(var login: String) {
     var password : String? = null

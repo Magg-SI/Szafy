@@ -1,8 +1,7 @@
 package pl.tysia.martech.Persistance.ApiClients
 
-import android.text.BoringLayout
 import org.json.JSONObject
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.BusinessLogic.Domain.UserType
 import pl.tysia.maggwarehouse.Persistance.LoginClient
 import pl.tysia.martech.Persistance.Connection.URLConnectionManagerImpl
@@ -72,15 +71,17 @@ class LoginClientImpl : LoginClient {
         val resCode = jsonRes.getInt(JSON_ERROR_CODE)
         val resMessage = jsonRes.getString(JSON_ERROR_MESSAGE)
 
-        val userID = jsonRes.getInt("userID")
-        val token = jsonRes.getString("token")
-        val isAdmin = jsonRes.getBoolean("isAdmin")
-        val szafaID = jsonRes.getInt("szafaID")
+        if (resCode == OK){
+            val userID = jsonRes.getInt("userID")
+            val token = jsonRes.getString("token")
+            val isAdmin = jsonRes.getBoolean("isAdmin")
+            val szafaID = jsonRes.getInt("szafaID")
 
-        user.id = userID
-        user.token = token
-        user.type = if (isAdmin) UserType.ADMIN else UserType.WORKER
-        user.lockerID  = szafaID
+            user.id = userID
+            user.token = token
+            user.type = if (isAdmin) UserType.ADMIN else UserType.WORKER
+            user.lockerID  = szafaID
+        }
 
         return Result<User>(user, resCode, resMessage)
     }

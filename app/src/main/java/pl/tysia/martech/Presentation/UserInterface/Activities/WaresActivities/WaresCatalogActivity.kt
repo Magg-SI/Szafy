@@ -10,13 +10,11 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_colect_wares.*
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.martech.BusinessLogic.Domain.Order
 import pl.tysia.martech.BusinessLogic.Domain.Ware
 import pl.tysia.martech.Persistance.ApiClients.WaresClientImpl
-import pl.tysia.martech.Persistance.ApiClients.WaresClientMock
 import pl.tysia.martech.Presentation.UserInterface.Activities.ScannerActivity
-import pl.tysia.martech.R
 import java.io.IOException
 
 abstract class WaresCatalogActivity : CatalogActivity<Order>() {
@@ -86,8 +84,15 @@ abstract class WaresCatalogActivity : CatalogActivity<Order>() {
 
         override fun onPostExecute(result: Bitmap?) {
 
-            if (result == null) Toast.makeText(this@WaresCatalogActivity, "Wystąpił błąd w trakcie pobierania zdjęcia", Toast.LENGTH_SHORT).show()
-            else{
+//            if (result == null) Toast.makeText(this@WaresCatalogActivity, "Do tego produktu nie przypisano zdjęcia", Toast.LENGTH_SHORT).show()
+//            else{
+//                order.imageBitmap = result
+//                adapter.filter()
+//                adapter.notifyDataSetChanged()
+//
+//            }
+
+            if (result != null){
                 order.imageBitmap = result
                 adapter.filter()
                 adapter.notifyDataSetChanged()

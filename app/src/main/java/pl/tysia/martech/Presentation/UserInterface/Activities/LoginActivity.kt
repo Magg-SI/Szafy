@@ -25,13 +25,11 @@ import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.MenuItem
-import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_login.*
 import pl.tysia.martech.R
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.Persistance.LoginClient
-import pl.tysia.maggwarehouse.Persistance.LoginClientMock
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
 import pl.tysia.martech.Persistance.Result
 
@@ -267,6 +265,8 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
                 Result.RESULT_OK ->
                     openMainActivity()
             }
+
+            showProgress(false)
         }
 
         override fun onCancelled() {

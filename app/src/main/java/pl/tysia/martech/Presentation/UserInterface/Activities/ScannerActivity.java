@@ -17,7 +17,7 @@ import com.google.zxing.Result;
 import java.io.IOException;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User;
+import pl.tysia.martech.BusinessLogic.Domain.User;
 import pl.tysia.martech.BusinessLogic.Domain.Ware;
 import pl.tysia.martech.Persistance.ApiClients.WaresClient;
 import pl.tysia.martech.Persistance.ApiClients.WaresClientImpl;
