@@ -4,7 +4,6 @@ import android.app.Dialog
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
@@ -14,15 +13,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.ListView
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.martech.BusinessLogic.Domain.Locker
 import pl.tysia.martech.Persistance.ApiClients.LockerClientImpl
-import pl.tysia.martech.Persistance.ApiClients.LockerClientMock
-import pl.tysia.martech.Presentation.PresentationLogic.Catalogs.CatalogAdapter
 import pl.tysia.martech.Presentation.PresentationLogic.Catalogs.LockersCatalogAdapter
 
 import pl.tysia.martech.R

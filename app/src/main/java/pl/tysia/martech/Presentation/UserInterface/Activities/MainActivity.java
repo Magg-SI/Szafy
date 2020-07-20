@@ -27,25 +27,26 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-import pl.tysia.maggwarehouse.BusinessLogic.Domain.User;
+import pl.tysia.martech.BusinessLogic.Domain.User;
 import pl.tysia.maggwarehouse.BusinessLogic.Domain.UserType;
 import pl.tysia.martech.BusinessLogic.Domain.Locker;
 import pl.tysia.martech.Persistance.ApiClients.LockerClient;
 import pl.tysia.martech.Persistance.ApiClients.LockerClientImpl;
-import pl.tysia.martech.Persistance.ApiClients.LockerClientMock;
 import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.CollectWaresCatalogActivity;
 import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.OrderWaresCatalogActivity;
 import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.StocktakingCatalogActivity;
 import pl.tysia.martech.Presentation.UserInterface.Fragments.DialogFragmentLockersList;
+import pl.tysia.martech.Presentation.UserInterface.Fragments.DialogFragmentOpenLocker;
 import pl.tysia.martech.Presentation.UserInterface.Fragments.DialogFragmentPassword;
 import pl.tysia.martech.R;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, DialogFragmentLockersList.OnLockerChosenListener {
+        implements NavigationView.OnNavigationItemSelectedListener, DialogFragmentLockersList.OnLockerChosenListener, DialogFragmentOpenLocker.OnDialogResult {
     private User user;
     private static final int ACTION_STOCKTAKE = 0;
     private static final int ACTION_TAKE = 1;
     private static final int ACTION_ORDER = 2;
+    private static final String OPEN_LOCKER_DIALOG_TAG = "pl.tysia.martech.open_locker_dialog";
     private int action = 1;
 
     @Override
@@ -263,7 +264,9 @@ public class MainActivity extends AppCompatActivity
 
 
     private void showOpenLockerBox(){
-        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        DialogFragmentOpenLocker.newInstance().show(getSupportFragmentManager(), OPEN_LOCKER_DIALOG_TAG);
+
+        /*android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
 
         builder.setTitle("Otwieranie szafy");
         builder.setMessage("Naciśnij przycisk na szafie");
@@ -286,7 +289,7 @@ public class MainActivity extends AppCompatActivity
         android.support.v7.app.AlertDialog alertDialog = builder.create();
         alertDialog.show();
         TextView textView = (TextView) alertDialog.findViewById(android.R.id.message);
-        textView.setTextSize(16);
+        textView.setTextSize(16);*/
     }
 
     private void openLocker(){
@@ -303,6 +306,12 @@ public class MainActivity extends AppCompatActivity
                 openOrderWares();
                 break;
         }
+    }
+
+    @Override
+    public void lockerOpenedResult(boolean lockerOpened) {
+        if (lockerOpened) openLockerClick(null);
+
     }
 
     class OpenLockerTask extends
