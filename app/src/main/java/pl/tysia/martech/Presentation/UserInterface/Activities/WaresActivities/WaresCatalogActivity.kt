@@ -47,9 +47,7 @@ abstract class WaresCatalogActivity : CatalogActivity<Order>() {
 
             if (item.isFoto) GetPhotoTask(order).execute()
         }
-        if (resultCode == Activity.RESULT_CANCELED) {
-            //TODO
-        }
+
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {

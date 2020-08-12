@@ -59,9 +59,7 @@ public class CollectWaresCatalog extends CatalogFragment<Order> {
             adapter.notifyDataSetChanged();
 
         }
-        if (resultCode == Activity.RESULT_CANCELED) {
-            //TODO
-        }
+
     }
 
 
