@@ -16,6 +16,7 @@ class StocktakingCatalogActivity : WaresCatalogActivity() {
 
 
     override fun onFinishClicked() {
+        showProgress(true)
         val task = SendWaresTask()
         task.execute()
     }

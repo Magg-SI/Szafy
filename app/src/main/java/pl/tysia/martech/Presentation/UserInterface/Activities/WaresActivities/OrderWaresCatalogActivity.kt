@@ -15,6 +15,7 @@ class OrderWaresCatalogActivity : WaresCatalogActivity() {
     private var sendWaresTask : SendWaresTask? = null
 
     override fun onFinishClicked() {
+        showProgress(true)
         val task = SendWaresTask()
         task.execute()
     }
