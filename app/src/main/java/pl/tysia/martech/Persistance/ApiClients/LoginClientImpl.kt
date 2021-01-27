@@ -76,11 +76,13 @@ class LoginClientImpl : LoginClient {
             val token = jsonRes.getString("token")
             val isAdmin = jsonRes.getBoolean("isAdmin")
             val szafaID = jsonRes.getInt("szafaID")
+            val szafaNr = jsonRes.getString("szafaNr")
 
             user.id = userID
             user.token = token
             user.type = if (isAdmin) UserType.ADMIN else UserType.WORKER
             user.lockerID  = szafaID
+            user.lockerNr  = szafaNr
         }
 
         return Result<User>(user, resCode, resMessage)

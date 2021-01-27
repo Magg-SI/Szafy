@@ -77,7 +77,7 @@ abstract class WaresCatalogActivity : CatalogActivity<Order>() {
             return try {
                 waresClient.getPhoto(order.ware.towID, user!!.token!!)
             }catch (e : IOException){
-                return null
+                null
             }
         }
 

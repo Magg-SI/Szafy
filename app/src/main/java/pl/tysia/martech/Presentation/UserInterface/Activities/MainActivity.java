@@ -69,6 +69,14 @@ public class MainActivity extends AppCompatActivity
 
         user = User.Companion.getLoggedUser(getApplicationContext());
         UserType userType = user.getType();
+
+        //TODO: naprawić prowizorkę ( WORKER może zmieniać szafę )
+        String xx = user.getToken();
+        if(xx.length()<4) xx="????";
+        xx = xx.substring(0,4);
+        boolean xzm = xx.equals("0181");
+        //Toast.makeText(MainActivity.this, xx, Toast.LENGTH_LONG).show();
+
         switch (userType) {
             case ADMIN:
                // navigationView.getMenu().findItem(R.id.take_item).setVisible(false);
@@ -78,11 +86,14 @@ public class MainActivity extends AppCompatActivity
                 break;
             case WORKER:
                 navigationView.getMenu().findItem(R.id.stocktake_item).setVisible(false);
-                navigationView.getMenu().findItem(R.id.change_locker).setVisible(false);
+
+                //TODO: naprawić prowizorkę ( WORKER może zmieniać szafę )
+                //navigationView.getMenu().findItem(R.id.change_locker).setVisible(false);
+                //navigationView.getMenu().findItem(R.id.change_locker).setVisible(xzm);
+
                 action = ACTION_TAKE;
                 break;
         }
-
     }
 
     private void changeLocker(){

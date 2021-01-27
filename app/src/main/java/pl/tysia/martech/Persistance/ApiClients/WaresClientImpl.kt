@@ -69,7 +69,6 @@ class WaresClientImpl : WaresClient {
         val nazwa  = jsonRes.getString("nazwa")
         val isFoto  = jsonRes.getBoolean("isFoto")
 
-
         return Ware(nazwa, towID, indeks, isFoto)
     }
 

@@ -22,12 +22,15 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".Presentation.UserInterface.Activities.WaresActivities.OrderWaresCatalogActivity"
             android:label="Zamawianie towarów"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Presentation.UserInterface.Activities.WaresActivities.CollectWaresCatalogActivity"
             android:label="Pobieranie towarów"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Presentation.UserInterface.Activities.WaresActivities.StocktakingCatalogActivity"
             android:label="Inwentaryzacja"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Presentation.UserInterface.Activities.PasswordChangeActivity"
             android:label="Zmiana hasła"
