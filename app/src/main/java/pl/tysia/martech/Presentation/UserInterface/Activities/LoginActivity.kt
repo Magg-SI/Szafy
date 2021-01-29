@@ -32,6 +32,7 @@ import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.Persistance.LoginClient
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
 import pl.tysia.martech.Persistance.Result
+import java.io.IOException
 
 /**
  * A login screen that offers login via email/password.
@@ -251,10 +252,13 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         }
 
         override fun doInBackground(vararg params: String): Result<Boolean>? {
+            return try{ val loginService = LoginClientImpl()
 
-            val loginService = LoginClientImpl()
+                loginService.checkToken(User.getLoggedUser(this@LoginActivity)!!)
+            }catch (e : IOException){
+                Result(false, -100, "Brak połączenia z internetem.")
+            }
 
-            return loginService.checkToken(User.getLoggedUser(this@LoginActivity)!!)
         }
 
         override fun onPostExecute(result: Result<Boolean>?) {
@@ -264,7 +268,9 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
             when (result?.resultCode) {
                 Result.RESULT_OK ->
                     openMainActivity()
+
             }
+
 
             showProgress(false)
         }
@@ -282,9 +288,13 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
 
         override fun doInBackground(vararg params: String): Result<User>? {
 
-            val loginService = LoginClientImpl()
+            return try{
+                val loginService = LoginClientImpl()
 
-            return loginService.authenticateUser(user)
+                loginService.authenticateUser(user)
+            }catch (ex : IOException){
+                Result(null, -100, "Brak połączenia z internetem.")
+            }
 
         }
 

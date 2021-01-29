@@ -143,11 +143,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void openLockerClick(View view){
+        if (user.getLockerID() == null){
+            changeLocker();
+        }else {
+            OpenLockerTask task = new OpenLockerTask();
+            task.execute();
 
-        OpenLockerTask task = new OpenLockerTask();
-        task.execute();
-
-        showProgress(true);
+            showProgress(true);
+        }
     }
 
     private void openCollectWares(){

@@ -69,7 +69,10 @@ abstract class CatalogActivity<T : ICatalogable> : AppCompatActivity(),
         adapter.filter()
         adapter.notifyDataSetChanged()
 
-        finish_button.setOnClickListener { onFinishClicked() }
+        finish_button.setOnClickListener {
+            showProgress(true)
+            onFinishClicked()
+        }
         scanButton.setOnClickListener { onScanClicked() }
 
         setSupportActionBar(themedToolbar)
@@ -116,40 +119,28 @@ abstract class CatalogActivity<T : ICatalogable> : AppCompatActivity(),
         b.show()
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     protected fun showProgress(show: Boolean) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
+        val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            val shortAnimTime = resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+        orders_container.visibility = if (show) View.GONE else View.VISIBLE
+        orders_container.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 0 else 1).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        orders_container.visibility = if (show) View.GONE else View.VISIBLE
+                    }
+                })
 
-            orders_container.visibility = if (show) View.GONE else View.VISIBLE
-            orders_container.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 0 else 1).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            orders_container.visibility = if (show) View.GONE else View.VISIBLE
-                        }
-                    })
-
-            orders_progress_bar.visibility = if (show) View.VISIBLE else View.GONE
-            orders_progress_bar.animate()
-                    .setDuration(shortAnimTime)
-                    .alpha((if (show) 1 else 0).toFloat())
-                    .setListener(object : AnimatorListenerAdapter() {
-                        override fun onAnimationEnd(animation: Animator) {
-                            orders_progress_bar.visibility = if (show) View.VISIBLE else View.GONE
-                        }
-                    })
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            orders_progress_bar.visibility = if (show) View.VISIBLE else View.GONE
-            orders_container.visibility = if (show) View.GONE else View.VISIBLE
-        }
+        orders_progress_bar.visibility = if (show) View.VISIBLE else View.GONE
+        orders_progress_bar.animate()
+                .setDuration(shortAnimTime)
+                .alpha((if (show) 1 else 0).toFloat())
+                .setListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator) {
+                        orders_progress_bar.visibility = if (show) View.VISIBLE else View.GONE
+                    }
+                })
     }
 
 
