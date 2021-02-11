@@ -5,9 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.NavigationView;
@@ -20,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,11 +47,22 @@ import pl.tysia.martech.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, DialogFragmentLockersList.OnLockerChosenListener, DialogFragmentOpenLocker.OnDialogResult {
     private User user;
+    private static final int IDLE_TIMEOUT = 120000;
     private static final int ACTION_STOCKTAKE = 0;
     private static final int ACTION_TAKE = 1;
     private static final int ACTION_ORDER = 2;
     private static final String OPEN_LOCKER_DIALOG_TAG = "pl.tysia.martech.open_locker_dialog";
     private int action = 1;
+
+    private boolean autoLogout = false;
+    private final Handler handler = new Handler();
+    private final Runnable logoutRunnable = new Runnable() {
+        @Override
+        public void run() {
+           new CheckLockerTask().execute();
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,9 +78,11 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        autoLogout = preferences.getBoolean("auto_logout", false);
 
         user = User.Companion.getLoggedUser(getApplicationContext());
         UserType userType = user.getType();
@@ -96,6 +113,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (autoLogout) resetTimeout();
+    }
+
     private void changeLocker(){
         FragmentManager fragmentManager = getSupportFragmentManager();
         DialogFragmentLockersList dialogFragmentLockersList =  DialogFragmentLockersList.newInstance();
@@ -120,6 +144,20 @@ public class MainActivity extends AppCompatActivity
         TextView name_tv = findViewById(R.id.name_tv);
         TextView locker_tv = findViewById(R.id.locker_tv);
 
+        final Switch item = findViewById(R.id.switch_item);
+        item.setChecked(autoLogout);
+
+        item.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autoLogout = !autoLogout;
+                item.setChecked(autoLogout);
+
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                preferences.edit().putBoolean("auto_logout", autoLogout).commit();
+            }
+        });
+
         if (name_tv!= null)
             name_tv.setText("Użytkownik: " + user.getLogin());
         if (locker_tv!= null)
@@ -142,7 +180,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void resetTimeout(){
+        handler.removeCallbacks(logoutRunnable);
+        handler.postDelayed(logoutRunnable, IDLE_TIMEOUT);
+    }
+
     public void openLockerClick(View view){
+        resetTimeout();
         if (user.getLockerID() == null){
             changeLocker();
         }else {
@@ -172,6 +216,13 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logout(){
+        User.Companion.logout(getApplicationContext());
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void logoutDialog(){
         android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
 
         builder.setMessage(R.string.logout_question);
@@ -179,11 +230,8 @@ public class MainActivity extends AppCompatActivity
         builder.setPositiveButton("TAK", new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface dialog, int which) {
-                User.Companion.logout(getApplicationContext());
+               logout();
                 dialog.dismiss();
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
             }
         });
 
@@ -206,6 +254,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
+
+        resetTimeout();
+
         int id = item.getItemId();
 
         if (id == R.id.take_item) {
@@ -225,7 +276,7 @@ public class MainActivity extends AppCompatActivity
             DialogFragmentPassword.newInstance(getString(R.string.password_confirmation_order)).show(fragmentManager, "TAG_CONFIRM_PASSWORD");
         }
         if (id == R.id.account_logout) {
-           logout();
+           logoutDialog();
         }
         if (id == R.id.change_locker) {
             changeLocker();
@@ -326,6 +377,38 @@ public class MainActivity extends AppCompatActivity
     public void lockerOpenedResult(boolean lockerOpened) {
         if (lockerOpened) openLockerClick(null);
 
+    }
+
+    class CheckLockerTask extends
+            AsyncTask<Integer, Integer, Boolean> {
+        private boolean exceptionOccured = false;
+        LockerClient lockerClient;
+
+        @Override
+        protected Boolean doInBackground(Integer... params){
+            User user = User.Companion.getLoggedUser(MainActivity.this);
+
+            try {
+                lockerClient = new LockerClientImpl();
+                return lockerClient.openLocker(user.getLockerID(), user.getToken());
+            }catch (IOException e){
+                exceptionOccured = true;
+                return null;
+            }
+
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            showProgress(false);
+
+            if (!result) logout();
+        }
+
+        @Override
+        protected void onCancelled() {
+            showProgress(false);
+        }
     }
 
     class OpenLockerTask extends
