@@ -3,41 +3,42 @@ package pl.tysia.martech.Presentation.UserInterface.Activities
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.TargetApi
-import android.support.v7.app.AppCompatActivity
 import android.app.LoaderManager.LoaderCallbacks
 import android.content.CursorLoader
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.Loader
 import android.database.Cursor
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.ContactsContract
+import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.Toolbar
 import android.text.TextUtils
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.TextView
-
-import java.util.ArrayList
-import android.content.Intent
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.Toolbar
-import android.view.MenuItem
-
 import kotlinx.android.synthetic.main.activity_login.*
-import pl.tysia.martech.R
-import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.maggwarehouse.Persistance.LoginClient
+import pl.tysia.martech.BusinessLogic.Domain.User
 import pl.tysia.martech.Persistance.ApiClients.LoginClientImpl
 import pl.tysia.martech.Persistance.Result
+import pl.tysia.martech.R
 import java.io.IOException
+import java.util.*
 
 /**
  * A login screen that offers login via email/password.
  */
 class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
+    private var autoLogout: Boolean = false
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -47,7 +48,10 @@ class LoginActivity : AppCompatActivity(), LoaderCallbacks<Cursor> {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        if (User.getLoggedUser(applicationContext) != null)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        autoLogout = preferences.getBoolean("auto_logout", false)
+
+        if (User.getLoggedUser(applicationContext) != null && !autoLogout)
             TokenTask().execute()
 
         // Set up the login form.
