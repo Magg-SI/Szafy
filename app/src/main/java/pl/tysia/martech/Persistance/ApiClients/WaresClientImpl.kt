@@ -54,9 +54,9 @@ class WaresClientImpl : WaresClient {
 
     private val connectionManager = URLConnectionManagerImpl()
 
-    override fun getWare(qrCode: String, token: String): Ware? {
+    override fun getWare(qrCode: String, lockerID : Int, token: String): Ware? {
         connectionManager.setConnection(URL(MAIN_URL))
-        val res= connectionManager.post(getGetWareJSONStr(qrCode, token))
+        val res= connectionManager.post(getGetWareJSONStr(qrCode, lockerID, token))
         connectionManager.closeConnection()
 
         val jsonRes = JSONObject(res)
@@ -72,12 +72,13 @@ class WaresClientImpl : WaresClient {
         return Ware(nazwa, towID, indeks, isFoto)
     }
 
-    private fun getGetWareJSONStr(qrCode: String, token: String) : String{
+    private fun getGetWareJSONStr(qrCode: String, lockerID: Int, token: String) : String{
         val json = JSONObject()
 
         json.put("func", "findQR")
         json.put("token", token)
         json.put("QR", qrCode)
+        json.put("szafaID", lockerID)
 
         return json.toString()
     }

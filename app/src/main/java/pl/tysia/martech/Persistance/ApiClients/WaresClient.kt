@@ -10,7 +10,7 @@ import java.io.IOException
 interface WaresClient {
 
     @Throws(IOException::class)
-    fun getWare(qrCode : String, token : String) : Ware?
+    fun getWare(qrCode : String, lockerID : Int, token : String) : Ware?
 
     @Throws(IOException::class)
     fun takeWares(wares: List<Order>, lockerNumber : Int, token : String) : Boolean

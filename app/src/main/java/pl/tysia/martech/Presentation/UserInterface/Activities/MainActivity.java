@@ -117,6 +117,8 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
+        setTitle("Szafa: " + user.getLockerNr());
+
         if (autoLogout) resetTimeout();
     }
 
@@ -325,6 +327,8 @@ public class MainActivity extends AppCompatActivity
 
         if (locker_tv!= null)
             locker_tv.setText("Szafa: " + user.getLockerNr());
+
+        setTitle("Szafa: " + user.getLockerNr());
     }
 
 

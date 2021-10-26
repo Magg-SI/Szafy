@@ -130,7 +130,7 @@ public class ScannerActivity extends AppCompatActivity implements ZXingScannerVi
             try {
 
                 waresClient = new WaresClientImpl();
-                return waresClient.getWare(params[0], user.getToken());
+                return waresClient.getWare(params[0], user.getLockerID(), user.getToken());
             }catch (IOException e){
                 exceptionOccured = true;
                 return null;

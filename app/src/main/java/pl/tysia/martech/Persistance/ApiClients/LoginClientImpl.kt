@@ -94,6 +94,7 @@ class LoginClientImpl : LoginClient {
         json.put("func" , "login")
         json.put("login" , user.login)
         json.put("password" , user.password)
+        json.put("verApi" , 2)
 
         return json.toString()
     }

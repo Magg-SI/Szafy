@@ -21,7 +21,7 @@ class WaresClientMock : WaresClient {
         return true
     }
 
-    override fun getWare(qrCode: String, token: String): Ware {
+    override fun getWare(qrCode: String, lockerID : Int, token: String): Ware {
         return Ware("Test ware ")
     }
 
