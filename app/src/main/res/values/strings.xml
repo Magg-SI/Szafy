@@ -11,8 +11,9 @@
     <string name="user_number">Numer użytkownika</string>
     <string name="password">Hasło</string>
     <string name="documents">Dokumenty</string>
-    <string name="documents_take">Pobierz</string>
-    <string name="documents_order">Zamów</string>
+    <string name="documents_take">Pobranie</string>
+    <string name="documents_back">Zwrot</string>
+    <string name="documents_order">Zamówienie</string>
     <string name="account">Konto</string>
     <string name="account_settings">Ustawienia konta</string>
 
@@ -63,10 +64,8 @@
     <string name="password_confirmation_order">By zmienić hasło podaj ponownie stare hasło</string>
     <string name="logout_question">Czy na pewno chcesz się wylogować?</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="document_not_sent">Wystąpił błąd i nie udało się wysłać dokumentu. Spróbuj ponownie.</string>
     <string name="orders_not_sent">Nie udało się wysłać zamówień</string>
-    <string name="collects_not_sent">Nie udało się wysłać popbranych produktów</string>
+    <string name="collects_not_sent">Nie udało się wysłać pobranych produktów</string>
 
 </resources>

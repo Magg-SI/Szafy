@@ -13,7 +13,10 @@ interface WaresClient {
     fun getWare(qrCode : String, lockerID : Int, token : String) : Ware?
 
     @Throws(IOException::class)
-    fun takeWares(wares: List<Order>, lockerNumber : Int, token : String) : Boolean
+    fun takeWares(wares: List<Order>, lockerNumber : Int, token : String) : Int
+
+    @Throws(IOException::class)
+    fun backWares(wares: List<Order>, lockerNumber : Int, token : String) : Int
 
     @Throws(IOException::class)
     fun orderWares(wares: List<Order>, lockerNumber : Int, token : String) : Boolean

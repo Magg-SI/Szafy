@@ -17,8 +17,12 @@ class WaresClientMock : WaresClient {
         return true
     }
 
-    override fun takeWares(wares: List<Order>, lockerNumber: Int, token : String): Boolean {
-        return true
+    override fun takeWares(wares: List<Order>, lockerNumber: Int, token : String): Int {
+        return 0
+    }
+
+    override fun backWares(wares: List<Order>, lockerNumber: Int, token : String): Int {
+        return 0
     }
 
     override fun getWare(qrCode: String, lockerID : Int, token: String): Ware {

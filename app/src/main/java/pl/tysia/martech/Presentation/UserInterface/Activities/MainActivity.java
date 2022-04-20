@@ -36,6 +36,7 @@ import pl.tysia.maggwarehouse.BusinessLogic.Domain.UserType;
 import pl.tysia.martech.BusinessLogic.Domain.Locker;
 import pl.tysia.martech.Persistance.ApiClients.LockerClient;
 import pl.tysia.martech.Persistance.ApiClients.LockerClientImpl;
+import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.BackWaresCatalogActivity;
 import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.CollectWaresCatalogActivity;
 import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.OrderWaresCatalogActivity;
 import pl.tysia.martech.Presentation.UserInterface.Activities.WaresActivities.StocktakingCatalogActivity;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity
     private static final int ACTION_STOCKTAKE = 0;
     private static final int ACTION_TAKE = 1;
     private static final int ACTION_ORDER = 2;
+    private static final int ACTION_BACK = 3;
     private static final String OPEN_LOCKER_DIALOG_TAG = "pl.tysia.martech.open_locker_dialog";
     private int action = 1;
 
@@ -87,13 +89,6 @@ public class MainActivity extends AppCompatActivity
         user = User.Companion.getLoggedUser(getApplicationContext());
         UserType userType = user.getType();
 
-        //TODO: naprawić prowizorkę ( WORKER może zmieniać szafę )
-        String xx = user.getToken();
-        if(xx.length()<4) xx="????";
-        xx = xx.substring(0,4);
-        boolean xzm = xx.equals("0181");
-        //Toast.makeText(MainActivity.this, xx, Toast.LENGTH_LONG).show();
-
         switch (userType) {
             case ADMIN:
                // navigationView.getMenu().findItem(R.id.take_item).setVisible(false);
@@ -103,11 +98,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case WORKER:
                 navigationView.getMenu().findItem(R.id.stocktake_item).setVisible(false);
-
-                //TODO: naprawić prowizorkę ( WORKER może zmieniać szafę )
-                //navigationView.getMenu().findItem(R.id.change_locker).setVisible(false);
-                //navigationView.getMenu().findItem(R.id.change_locker).setVisible(xzm);
-
                 action = ACTION_TAKE;
                 break;
         }
@@ -117,7 +107,10 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
 
-        setTitle("Szafa: " + user.getLockerNr());
+        TextView locker_nr = findViewById(R.id.textNrSzafy);
+        if (locker_nr!= null) locker_nr.setText(user.getLockerNr());
+
+        setTitle(getTypDocum());
 
         if (autoLogout) resetTimeout();
     }
@@ -160,10 +153,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        if (name_tv!= null)
-            name_tv.setText("Użytkownik: " + user.getLogin());
-        if (locker_tv!= null)
-            locker_tv.setText("Szafa: " + user.getLockerNr());
+        if (name_tv!= null) name_tv.setText("Użytkownik: " + user.getLogin());
+        if (locker_tv!= null) locker_tv.setText("Szafa: " + user.getLockerNr());
         return true;
     }
 
@@ -187,7 +178,7 @@ public class MainActivity extends AppCompatActivity
         handler.postDelayed(logoutRunnable, IDLE_TIMEOUT);
     }
 
-    public void openLockerClick(View view){
+    public void openLockerClick(View view) {
         resetTimeout();
         if (user.getLockerID() == null){
             changeLocker();
@@ -202,19 +193,21 @@ public class MainActivity extends AppCompatActivity
     private void openCollectWares(){
         Intent intent = new Intent(this, CollectWaresCatalogActivity.class);
         startActivity(intent);
+    }
 
+    private void openBackWares(){
+        Intent intent = new Intent(this, BackWaresCatalogActivity.class);
+        startActivity(intent);
     }
 
     private void openOrderWares(){
         Intent intent = new Intent(this, OrderWaresCatalogActivity.class);
         startActivity(intent);
-
     }
 
     private void openStocktaking(){
         Intent intent = new Intent(this, StocktakingCatalogActivity.class);
         startActivity(intent);
-
     }
 
     private void logout(){
@@ -265,6 +258,10 @@ public class MainActivity extends AppCompatActivity
             action = ACTION_TAKE;
             openLockerClick(null);
         }
+        if (id == R.id.back_item) {
+            action = ACTION_BACK;
+            openLockerClick(null);
+        }
         if (id == R.id.order_item) {
             action = ACTION_ORDER;
             openLockerClick(null);
@@ -273,6 +270,8 @@ public class MainActivity extends AppCompatActivity
             action = ACTION_STOCKTAKE;
             openLockerClick(null);
         }
+        setTitle(getTypDocum());
+
         if (id == R.id.account_change_password) {
             FragmentManager fragmentManager = getSupportFragmentManager();
             DialogFragmentPassword.newInstance(getString(R.string.password_confirmation_order)).show(fragmentManager, "TAG_CONFIRM_PASSWORD");
@@ -320,15 +319,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLockerChosen(@NotNull Locker locker) {
         TextView locker_tv = findViewById(R.id.locker_tv);
+        TextView locker_nr = findViewById(R.id.textNrSzafy);
 
         user.setLockerID(locker.getId());
         user.setLockerNr(locker.getNumber());
         user.setLogged(this);
 
-        if (locker_tv!= null)
-            locker_tv.setText("Szafa: " + user.getLockerNr());
+        if (locker_tv!= null) locker_tv.setText("Szafa: " + user.getLockerNr());
+        if (locker_nr!= null) locker_nr.setText(user.getLockerNr());
 
-        setTitle("Szafa: " + user.getLockerNr());
+        setTitle(getTypDocum());
+    }
+
+    String getTypDocum(){
+
+        if(action==ACTION_STOCKTAKE) return "Inwentaryzacja";
+        if(action==ACTION_TAKE) return "Pobranie";
+        if(action==ACTION_ORDER) return "Zamówienie";
+        if(action==ACTION_BACK) return "Zwrot";
+        return "";
     }
 
 
@@ -370,6 +379,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case ACTION_TAKE:
                 openCollectWares();
+                break;
+            case ACTION_BACK:
+                openBackWares();
                 break;
             case ACTION_ORDER:
                 openOrderWares();

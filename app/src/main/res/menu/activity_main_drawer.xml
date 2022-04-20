@@ -14,6 +14,9 @@
             <item
                 android:id="@+id/stocktake_item"
                 android:title="@string/stocktaking" />
+            <item
+                android:id="@+id/back_item"
+                android:title="@string/documents_back" />
         </menu>
     </item>
     <item android:title="@string/account" >

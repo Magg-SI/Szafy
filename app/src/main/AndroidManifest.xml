@@ -28,6 +28,10 @@
             android:label="Pobieranie towarów"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Presentation.UserInterface.Activities.WaresActivities.BackWaresCatalogActivity"
+            android:label="Zwrot towarów"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Presentation.UserInterface.Activities.WaresActivities.StocktakingCatalogActivity"
             android:label="Inwentaryzacja"
             android:screenOrientation="portrait"

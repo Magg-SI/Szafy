@@ -12,7 +12,7 @@ import java.io.IOException
 import java.util.ArrayList
 
 
-class CollectWaresCatalogActivity : WaresCatalogActivity() {
+class BackWaresCatalogActivity : WaresCatalogActivity() {
 
     private var sendWaresTask : SendWaresTask? = null
 
@@ -31,37 +31,26 @@ class CollectWaresCatalogActivity : WaresCatalogActivity() {
     }
 
     override fun onItemSelected(item: Order?) {
-
     }
 
 
     inner class SendWaresTask  :
             AsyncTask<String, String, Int>() {
         private val waresClient = WaresClientImpl()
-        //var ordersSent = false;
         var collectsSent = 0;
-        var apiInfo: String=""
 
         override fun doInBackground(vararg params: String): Int? {
 
             val toSend = catalogItemsList.filter { cWare -> cWare.quantityTaken > 0 }
             //val toSendOrdered = catalogItemsList.filter { cWare -> cWare.quantityOrdered > 0 }
 
-            val user = User.getLoggedUser(this@CollectWaresCatalogActivity)
-
+            val user = User.getLoggedUser(this@BackWaresCatalogActivity)
 
             try {
-                collectsSent = waresClient.takeWares(toSend, user!!.lockerID!!, user.token!!)
-                if(collectsSent>0 ) apiInfo= waresClient.retInfo
-                else apiInfo=""
-                //if (toSendOrdered.isEmpty())
-                //    ordersSent = waresClient.orderWares(toSendOrdered, user!!.lockerID!!,user.token!!)
+                collectsSent = waresClient.backWares(toSend, user!!.lockerID!!, user.token!!)
             }catch (e : IOException){
                return null
             }
-
-            //return ordersSent && collectsSent
-
             return collectsSent
         }
 
@@ -74,13 +63,10 @@ class CollectWaresCatalogActivity : WaresCatalogActivity() {
             }
             else if (result==0) {
                 finish()
-                Toast.makeText(this@CollectWaresCatalogActivity, getString(R.string.toast_sent_correctly), Toast.LENGTH_LONG).show()
-            }
-            else if (result>0) {
-                Toast.makeText(this@CollectWaresCatalogActivity, apiInfo, Toast.LENGTH_LONG).show()
+                Toast.makeText(this@BackWaresCatalogActivity, getString(R.string.toast_sent_correctly), Toast.LENGTH_LONG).show()
             }
             else {
-                Toast.makeText(this@CollectWaresCatalogActivity, getString(R.string.collects_not_sent), Toast.LENGTH_LONG).show()
+                Toast.makeText(this@BackWaresCatalogActivity, getString(R.string.collects_not_sent), Toast.LENGTH_LONG).show()
             }
 
                     //if (!ordersSent && !collectsSent)  okDialog(getString(R.string.exception_occurres), getString(R.string.document_not_sent))

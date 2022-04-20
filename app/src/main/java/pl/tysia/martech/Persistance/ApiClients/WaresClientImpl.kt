@@ -20,7 +20,9 @@ class WaresClientImpl : WaresClient {
         private const val DOC_ORDER = 1
         private const val DOC_TAKE = 2
         private const val DOC_STOCK = 3
+        private const val DOC_BACK = 4
     }
+    var retInfo: String = ""
 
     override fun getPhoto(id: Int, token: String): Bitmap? {
         connectionManager.setConnection(URL(MAIN_URL))
@@ -83,15 +85,32 @@ class WaresClientImpl : WaresClient {
         return json.toString()
     }
 
-    override fun takeWares(wares: List<Order>, lockerNumber: Int, token : String): Boolean {
+    override fun takeWares(wares: List<Order>, lockerNumber: Int, token : String): Int {
         connectionManager.setConnection(URL(MAIN_URL))
         val res= connectionManager.post(getSendDocJSON(wares, lockerNumber, token, DOC_TAKE, false))
         connectionManager.closeConnection()
 
+        retInfo=""
         val jsonRes = JSONObject(res)
         val resCode = jsonRes.getInt(JSON_ERROR_CODE)
+        retInfo = jsonRes.getString("retOpis")
 
-        return resCode == OK
+        //return resCode == OK
+        return resCode
+    }
+
+    override fun backWares(wares: List<Order>, lockerNumber: Int, token : String): Int {
+        connectionManager.setConnection(URL(MAIN_URL))
+        val res= connectionManager.post(getSendDocJSON(wares, lockerNumber, token, DOC_BACK, false))
+        connectionManager.closeConnection()
+
+        retInfo=""
+        val jsonRes = JSONObject(res)
+        val resCode = jsonRes.getInt(JSON_ERROR_CODE)
+        retInfo = jsonRes.getString("retOpis")
+
+        //return resCode == OK
+        return resCode
     }
 
     override fun orderWares(wares: List<Order>, lockerNumber: Int, token : String): Boolean {
